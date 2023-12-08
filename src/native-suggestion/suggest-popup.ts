@@ -44,12 +44,27 @@ export default class SuggestionPopup extends EditorSuggest<
 		this.focused = false;
 	}
 
+	getFoldersAndSubfolders(context: EditorSuggestContext) {
+	    return folders;
+	}
+
+	getCharactersFolder(current: TFolder){
+		var folder = current;
+		while(folder != null && folder.name != 'Characters') {
+			if (folder.children.filter((f) => f.name == 'Characters').length == 1) {
+				return `${folder.path}/Characters`;
+			}
+			folder = folder.parent;
+		}
+		return ''
+	}
+
 	getSuggestions(
 		context: EditorSuggestContext
 	): Fuzzysort.KeysResult<fileOption>[] {
 		const files = context.file.vault.getMarkdownFiles();
-		const folder = context.file.parent.path;
-		return sharedGetSuggestions(folder, files, context.query, this.settings);
+		const characterFolder = getCharacterFolder(context.file.parent);
+		return sharedGetSuggestions(characterFolder, files, context.query, this.settings);
 	}
 
 	onTrigger(
