@@ -4,24 +4,16 @@ import { type AtSymbolLinkingSettings } from "src/settings/settings";
 import { type fileOption } from "src/types";
 
 export function sharedGetSuggestions(
+	folder: string,
 	files: TFile[],
 	query: string,
 	settings: AtSymbolLinkingSettings
 ): Fuzzysort.KeysResult<fileOption>[] {
 	const options: fileOption[] = [];
 	for (const file of files) {
-		// If there are folders to limit links to, check if the file is in one of them
-		if (settings.limitLinkDirectories.length > 0) {
-			let isAllowed = false;
-			for (const folder of settings.limitLinkDirectories) {
-				if (file.path.startsWith(folder)) {
-					isAllowed = true;
-					break;
-				}
-			}
-			if (!isAllowed) {
-				continue;
-			}
+		// checks if the file is from folder
+		if (!file.path.startsWith(folder)) {
+			continue;
 		}
 		const meta = app.metadataCache.getFileCache(file);
 		if (meta?.frontmatter?.alias) {
