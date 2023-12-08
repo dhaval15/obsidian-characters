@@ -48,7 +48,8 @@ export default class SuggestionPopup extends EditorSuggest<
 		context: EditorSuggestContext
 	): Fuzzysort.KeysResult<fileOption>[] {
 		const files = context.file.vault.getMarkdownFiles();
-		return sharedGetSuggestions(files, context.query, this.settings);
+		const folder = context.file.parent.path;
+		return sharedGetSuggestions(folder, files, context.query, this.settings);
 	}
 
 	onTrigger(
