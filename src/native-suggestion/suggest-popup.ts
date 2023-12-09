@@ -44,11 +44,7 @@ export default class SuggestionPopup extends EditorSuggest<
 		this.focused = false;
 	}
 
-	getFoldersAndSubfolders(context: EditorSuggestContext) {
-	    return folders;
-	}
-
-	getCharactersFolder(current: TFolder){
+	getCharactersFolder(current: TFolder | null){
 		var folder = current;
 		while(folder != null && folder.name != 'Characters') {
 			if (folder.children.filter((f) => f.name == 'Characters').length == 1) {
@@ -63,7 +59,7 @@ export default class SuggestionPopup extends EditorSuggest<
 		context: EditorSuggestContext
 	): Fuzzysort.KeysResult<fileOption>[] {
 		const files = context.file.vault.getMarkdownFiles();
-		const characterFolder = getCharacterFolder(context.file.parent);
+		const characterFolder = getCharactersFolder(context.file.parent);
 		return sharedGetSuggestions(characterFolder, files, context.query, this.settings);
 	}
 
